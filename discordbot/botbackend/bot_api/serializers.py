@@ -1,17 +1,7 @@
 from rest_framework import serializers
-from .models import *
+from .models import Playmate
 
-# class AdvertisementSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Advertisement
-#         fields = '__all__'
-
-# class AppointmentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Appointment
-#         fields = '__all__'
-
-# class AppealSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Appeal
-#         fields = '__all__'
+class PlaymateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Playmate
+        fields = '__all__'

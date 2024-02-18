@@ -11,8 +11,13 @@ def get_playmate(request):
     playmate = get_object_or_404(Playmate, user=user)
     headline = playmate.headline_message
     game_category = playmate.game_category
+    active = playmate.active
     
-    if headline and game_category:
+    if headline and game_category and active:
+        return Response({'headline_message': playmate.headline_message,
+                         'game_category': playmate.game_category,
+                         'active': playmate.active})
+    elif headline and game_category:
         return Response({'headline_message': playmate.headline_message,
                          'game_category': playmate.game_category})
     elif headline:
@@ -29,7 +34,7 @@ def set_playmate(request):
     user = request.query_params.get('user')
     message = request.data.get('headline_message', '')
     game_category = request.data.get('game_category', '')
-    active = request.data.get('game_category', False)
+    active = request.data.get('active', False)
     
     if not user:
         return Response({'error': 'User parameter is missing'}, status=status.HTTP_400_BAD_REQUEST)
@@ -40,8 +45,8 @@ def set_playmate(request):
             playmate.headline_message = message
         if game_category:
             playmate.game_category = game_category
-        if active:
-            playmate.active = True
+        if active is not None:
+            playmate.active = active
         playmate.save()
         
         if created:
@@ -51,6 +56,21 @@ def set_playmate(request):
     except Exception as e:
         return Response({'error': str(e)})
 
+@api_view(['GET'])
+def find_playmate(request):
+    user = request.query_params.get('user')
+    gameName = request.query_params.get('gameName')
+    active = request.query_params.get('active')
+
+    if active and gameName and user:
+        playmates = Playmate.objects.filter(user=user, game_category=gameName, active=True)
+
+        serializer = PlaymateSerializer(playmates, many=True)
+        return Response(serializer.data)
+    
+    # Return an empty list if the conditions are not met
+    return Response([])
+   
 
 
 # @api_view(['GET'])

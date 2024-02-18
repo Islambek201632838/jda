@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import Playmate
 
 admin.site.register(Playmate)
 # admin.site.register(Advertisement)
